@@ -22,7 +22,7 @@ in
 {
   options.programs.wallpaper-manager.enable = lib.mkEnableOption "Enable swww-selector";
 
-  config = lib.mkIf config.programs.swww-selector.enable {
+  config = lib.mkIf config.programs.wallpaper-manager.enable {
 
     systemd.user.services = {
       swww = {
