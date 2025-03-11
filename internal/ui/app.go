@@ -22,7 +22,7 @@ type App struct {
 
 func NewApp(defaultWallpaperDir string) *App {
 	fyneApp := app.New()
-	mainWindow := fyneApp.NewWindow("SWWW Wallpaper Selector")
+	mainWindow := fyneApp.NewWindow("Wallpaper Manager")
 	mainWindow.Resize(fyne.NewSize(1000, 600))
 
 	statusLabel := widget.NewLabel("Loading wallpapers...")
