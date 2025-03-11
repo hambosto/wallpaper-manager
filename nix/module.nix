@@ -43,8 +43,9 @@ in
       wallpaper-activator = {
         Unit = {
           Description = "Activate Wallpaper using swww";
-          After = [ "swww.service" ];
           Requires = [ "swww.service" ];
+          After = [ "swww.service" ];
+          PartOf = [ "swww.service" ];
         };
         Install.WantedBy = [ "graphical-session.target" ];
         Service = {
