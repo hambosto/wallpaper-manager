@@ -47,7 +47,7 @@ in
           After = [ "swww.service" ];
           PartOf = [ "swww.service" ];
         };
-        Install.WantedBy = [ "graphical-session.target" ];
+        Install.WantedBy = [ "swww.service" ];
         Service = {
           Type = "oneshot";
           ExecStart = "${wallpaper-activator}/bin/wallpaper-activator";
