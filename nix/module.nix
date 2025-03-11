@@ -20,7 +20,7 @@ let
   '';
 in
 {
-  options.programs.swww-selector.enable = lib.mkEnableOption "Enable swww-selector";
+  options.programs.wallpaper-manager.enable = lib.mkEnableOption "Enable swww-selector";
 
   config = lib.mkIf config.programs.swww-selector.enable {
 
