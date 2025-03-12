@@ -29,7 +29,7 @@ func (s *WallpaperService) GetWallpapers() ([]model.Wallpaper, error) {
 	for _, file := range files {
 		if !file.IsDir() {
 			ext := strings.ToLower(filepath.Ext(file.Name()))
-			if ext == ".jpg" || ext == ".jpeg" || ext == ".png" {
+			if ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" {
 				wallpapers = append(wallpapers, model.Wallpaper{
 					Name: file.Name(),
 					Path: filepath.Join(s.WallpaperDir, file.Name()),

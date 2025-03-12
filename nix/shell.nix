@@ -9,6 +9,7 @@ pkgs.mkShell {
     with pkgs;
     [
       go
+      swww
     ]
     ++ common.buildDeps
     ++ common.libraryDeps;

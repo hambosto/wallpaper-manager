@@ -9,7 +9,7 @@ pkgs.buildGoModule {
   version = common.meta.version;
 
   src = ./../.;
-  vendorHash = "sha256-I48dlmqxhgkLFKDG2d/a+16SkjO5P/XnRfbqHBUzLac=";
+  vendorHash = "sha256-xSuv0vwSPhuzElLG3lPZhM6w61WpqvBpo/UCk3NT20w=";
 
   nativeBuildInputs = common.buildDeps ++ [
     pkgs.makeWrapper
