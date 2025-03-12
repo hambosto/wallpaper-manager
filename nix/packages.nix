@@ -25,7 +25,7 @@ pkgs.buildGoModule {
     mkdir -p $out/share/applications
     mkdir -p $out/share/icons/hicolor/128x128/apps
         
-    cp ${../assets/logo.png} $out/share/icons/hicolor/128x128/apps/${common.meta.pname}.png
+    cp ${../assets/wallpaper-selector.png} $out/share/icons/hicolor/128x128/apps/${common.meta.pname}.png
         
     cat > $out/share/applications/${common.meta.pname}.desktop << EOF
     [Desktop Entry]
