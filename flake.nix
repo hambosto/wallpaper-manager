@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    swww.url = "github:LGFae/swww";
   };
 
   outputs =
@@ -11,12 +12,19 @@
       self,
       nixpkgs,
       flake-utils,
-      ...
+      swww,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            (final: prev: {
+              swww = swww.packages.${system}.swww;
+            })
+          ];
+        };
       in
       {
         packages.default = import ./nix/packages.nix { inherit pkgs; };
