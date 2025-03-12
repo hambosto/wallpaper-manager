@@ -13,7 +13,7 @@ type ListManager struct {
 	wallpaperService  *service.WallpaperService
 	wallpapers        []model.Wallpaper
 	wallpaperList     *widget.List
-	selectedID        int
+	selectedIndex     int
 	onSelectionChange func(int)
 }
 
@@ -21,7 +21,7 @@ func NewListManager(wallpaperServ *service.WallpaperService, onSelectionChange f
 	lm := &ListManager{
 		wallpaperService:  wallpaperServ,
 		wallpapers:        []model.Wallpaper{},
-		selectedID:        -1,
+		selectedIndex:     -1,
 		onSelectionChange: onSelectionChange,
 	}
 
@@ -38,7 +38,7 @@ func NewListManager(wallpaperServ *service.WallpaperService, onSelectionChange f
 	)
 
 	lm.wallpaperList.OnSelected = func(id widget.ListItemID) {
-		lm.selectedID = id
+		lm.selectedIndex = id
 		if lm.onSelectionChange != nil {
 			lm.onSelectionChange(id)
 		}
@@ -66,13 +66,17 @@ func (l *ListManager) GetWallpaper(index int) *model.Wallpaper {
 }
 
 func (l *ListManager) GetSelectedWallpaper() *model.Wallpaper {
-	return l.GetWallpaper(l.selectedID)
+	return l.GetWallpaper(l.selectedIndex)
 }
 
 func (l *ListManager) SelectWallpaper(index int) {
 	if index >= 0 && index < len(l.wallpapers) {
 		l.wallpaperList.Select(index)
 	}
+}
+
+func (l *ListManager) GetSelectedIndex() int {
+	return l.selectedIndex
 }
 
 func (l *ListManager) GetWallpaperCount() int {
