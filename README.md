@@ -2,7 +2,7 @@
 
 A simple wallpaper manager for Wayland using the [swww](https://github.com/LGFae/swww) wallpaper daemon.
 
-![SWWW Selector](assets/logo.png)
+![SWWW Selector](assets/full_2025-03-12_14-41-38.png)
 
 ## Description
 
