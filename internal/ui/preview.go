@@ -14,20 +14,17 @@ import (
 	"github.com/hambosto/wallpaper-manager/internal/model"
 )
 
-// ImageCache stores decoded images to reduce memory usage
 type ImageCache struct {
 	cache map[string]image.Image
 	mutex sync.RWMutex
 }
 
-// NewImageCache creates a new image cache
 func NewImageCache() *ImageCache {
 	return &ImageCache{
 		cache: make(map[string]image.Image),
 	}
 }
 
-// Get retrieves an image from the cache
 func (c *ImageCache) Get(path string) (image.Image, bool) {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
@@ -35,7 +32,6 @@ func (c *ImageCache) Get(path string) (image.Image, bool) {
 	return img, exists
 }
 
-// Set adds an image to the cache
 func (c *ImageCache) Set(path string, img image.Image) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -110,19 +106,16 @@ func (p *PreviewManager) UpdatePreview(wallpaper *model.Wallpaper) {
 
 	p.currentPath = wallpaper.Path
 
-	// Show loading state
 	p.loadingText.Show()
 	p.loadingProgress.SetValue(0.0)
 	p.loadingProgress.Show()
 	p.previewContainer.Refresh()
 
-	// Check if the image is already cached
 	if cachedImg, exists := p.imageCache.Get(wallpaper.Path); exists {
 		p.displayCachedImage(cachedImg)
 		return
 	}
 
-	// Prevent redundant loads for the same image
 	once, _ := p.onceMap.LoadOrStore(wallpaper.Path, &sync.Once{})
 	once.(*sync.Once).Do(func() {
 		go p.loadAndCacheImage(wallpaper.Path)
@@ -150,10 +143,8 @@ func (p *PreviewManager) loadAndCacheImage(path string) {
 		return
 	}
 
-	// Cache the decoded image
 	p.imageCache.Set(path, img)
 
-	// Display the image only if it's still the selected one
 	if p.currentPath == path {
 		p.displayCachedImage(img)
 	}
