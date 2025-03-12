@@ -2,10 +2,13 @@ package ui
 
 import (
 	"fmt"
+	"net/url"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/hambosto/wallpaper-manager/internal/service"
 )
@@ -52,6 +55,7 @@ func (a *App) Run() {
 	setBtn := a.createSetButton()
 	changeFolderBtn := a.createChangeFolderButton()
 	refreshBtn := a.createRefreshButton()
+	aboutBtn := widget.NewButton("About", func() { a.showAboutDialog() })
 
 	leftPanel := container.NewBorder(
 		container.NewVBox(
@@ -62,6 +66,7 @@ func (a *App) Run() {
 		container.NewVBox(
 			setBtn,
 			refreshBtn,
+			aboutBtn,
 		),
 		nil,
 		nil,
@@ -93,8 +98,122 @@ func (a *App) Run() {
 		split,
 	)
 
+	a.mainWindow.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
+		switch key.Name {
+		case fyne.KeyUp:
+			a.navigateWallpaper(-1)
+		case fyne.KeyDown:
+			a.navigateWallpaper(1)
+		case fyne.KeyReturn:
+			a.setCurrentWallpaper()
+		}
+	})
+
 	a.mainWindow.SetContent(content)
 	a.mainWindow.ShowAndRun()
+}
+
+func (a *App) showAboutDialog() {
+	const (
+		windowTitle  = "About Wallpaper Manager"
+		windowWidth  = 520
+		windowHeight = 420
+		iconSize     = 64
+	)
+
+	aboutWindow := a.fyneApp.NewWindow(windowTitle)
+	aboutWindow.Resize(fyne.NewSize(windowWidth, windowHeight))
+
+	appIcon := canvas.NewImageFromResource(theme.ComputerIcon())
+	appIcon.Resize(fyne.NewSize(iconSize, iconSize))
+	appIcon.FillMode = canvas.ImageFillContain
+
+	heading := widget.NewLabelWithStyle(
+		"Wallpaper Manager",
+		fyne.TextAlignCenter,
+		fyne.TextStyle{Bold: true},
+	)
+
+	author := widget.NewLabelWithStyle(
+		"Created by Ilham Putra Husada (hambosto)",
+		fyne.TextAlignCenter,
+		fyne.TextStyle{Italic: true},
+	)
+
+	githubURL, _ := url.Parse("https://github.com/hambosto/wallpaper-manager")
+	issuesURL, _ := url.Parse("https://github.com/hambosto/wallpaper-manager/issues")
+	swwwURL, _ := url.Parse("https://github.com/LGFae/swww")
+
+	links := container.NewHBox(
+		widget.NewHyperlink("GitHub", githubURL),
+		widget.NewLabel(" • "),
+		widget.NewHyperlink("Report Issue", issuesURL),
+		widget.NewLabel(" • "),
+		widget.NewHyperlink("SWWW", swwwURL),
+	)
+
+	backendInfo := widget.NewLabelWithStyle(
+		"Powered by SWWW Wallpaper Daemon",
+		fyne.TextAlignCenter,
+		fyne.TextStyle{Italic: true},
+	)
+
+	closeBtn := widget.NewButton("Close", func() {
+		aboutWindow.Close()
+	})
+	closeBtn.Importance = widget.HighImportance
+
+	content := container.NewVBox(
+		container.NewCenter(appIcon),
+		heading,
+		container.NewCenter(author),
+		widget.NewSeparator(),
+		container.NewCenter(links),
+		container.NewCenter(backendInfo),
+		widget.NewSeparator(),
+		container.NewCenter(closeBtn),
+	)
+
+	aboutWindow.SetContent(container.NewPadded(content))
+	aboutWindow.CenterOnScreen()
+	aboutWindow.Show()
+}
+
+func (a *App) setCurrentWallpaper() {
+	if selectedWP := a.listManager.GetSelectedWallpaper(); selectedWP != nil {
+		a.updateStatusText(fmt.Sprintf("Setting wallpaper: %s", selectedWP.Name))
+
+		err := a.wallpaperService.SetWallpaper(selectedWP.Path)
+		if err != nil {
+			a.showError(fmt.Sprintf("Error setting wallpaper: %v", err))
+		} else {
+			a.updateStatusText(fmt.Sprintf("Wallpaper set: %s", selectedWP.Name))
+		}
+	}
+}
+
+func (a *App) navigateWallpaper(delta int) {
+	if a.listManager == nil || a.listManager.GetWallpaperCount() == 0 {
+		return
+	}
+
+	currentIndex := a.listManager.GetSelectedIndex()
+	newIndex := currentIndex + delta
+
+	wallpaperCount := a.listManager.GetWallpaperCount()
+	if newIndex < 0 {
+		newIndex = wallpaperCount - 1
+	} else if newIndex >= wallpaperCount {
+		newIndex = 0
+	}
+
+	if newIndex != currentIndex {
+		a.listManager.SelectWallpaper(newIndex)
+		wp := a.listManager.GetWallpaper(newIndex)
+		if wp != nil {
+			a.updateStatusText(fmt.Sprintf("Selected wallpaper: %s", wp.Name))
+		}
+	}
 }
 
 func (a *App) createSetButton() *widget.Button {
