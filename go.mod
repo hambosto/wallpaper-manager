@@ -1,10 +1,10 @@
 module github.com/hambosto/wallpaper-manager
 
-go 1.23.6
+go 1.24.1
 
 require (
-	fyne.io/fyne/v2 v2.5.4
-	golang.org/x/sync v0.7.0
+	fyne.io/fyne/v2 v2.5.5
+	golang.org/x/sync v0.12.0
 )
 
 require (
