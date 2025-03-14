@@ -22,14 +22,14 @@ in
 {
   options.programs.wallpaper-manager = {
     enable = lib.mkEnableOption "Enable swww-selector";
-    hyprland = {
-      enable = lib.mkEnableOption "Enable Hyprland color integration";
-      configFile = lib.mkOption {
-        type = lib.types.str;
-        default = "~/.config/hypr/hyprland.conf";
-        description = "Path to main Hyprland configuration file";
-      };
-    };
+    # hyprland = {
+    #   enable = lib.mkEnableOption "Enable Hyprland color integration";
+    #   configFile = lib.mkOption {
+    #     type = lib.types.str;
+    #     default = "~/.config/hypr/hyprland.conf";
+    #     description = "Path to main Hyprland configuration file";
+    #   };
+    # };
   };
 
   config = lib.mkIf config.programs.wallpaper-manager.enable {
