@@ -56,7 +56,6 @@ If you want to install the package without using the module:
 { inputs, pkgs, ... }: {
   environment.systemPackages = [
     inputs.wallpaper-manager.packages.${pkgs.system}.default
-    pkgs.swww  # Ensure `swww` is installed
   ];
 }
 ```
