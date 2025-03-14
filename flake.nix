@@ -24,6 +24,15 @@
       }
     )
     // {
-      nixosModules.default = import ./nix/module.nix { inherit self; };
+      homeManagerModules.default = import ./nix/module.nix { inherit self; };
+      nixosModules.default =
+        { pkgs, ... }:
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              wallpaper-manager = self.packages.${pkgs.system}.default;
+            })
+          ];
+        };
     };
 }
