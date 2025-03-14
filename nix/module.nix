@@ -93,18 +93,18 @@ in
       $color15 = rgb({{color15 | strip}})
     '';
 
-    # Hyprland integration
-    wayland.windowManager.hyprland = lib.mkIf config.programs.wallpaper-manager.hyprland.enable {
-      extraConfig = ''
-        source = "${config.xdg.configHome}/config/hypr/hyprland-colors.conf"
-      '';
-      settings = {
-        general = {
-          "col.active_border" = "$color12";
-          "col.inactive_border" = "$color10";
-        };
-      };
-    };
+    # # Hyprland integration
+    # wayland.windowManager.hyprland = lib.mkIf config.programs.wallpaper-manager.hyprland.enable {
+    #   extraConfig = ''
+    #     source = ${config.xdg.configHome}/config/hypr/hyprland-colors.conf
+    #   '';
+    #   settings = {
+    #     general = {
+    #       "col.active_border" = "$color12";
+    #       "col.inactive_border" = "$color10";
+    #     };
+    #   };
+    # };
 
     home.packages = [ self.packages.${pkgs.system}.default ];
   };
