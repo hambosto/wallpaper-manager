@@ -32,10 +32,10 @@ inputs = {
 Enable the module in your configuration:
 
 ```nix
-# In your configuration.nix or home.nix
+# In your home.nix
 { inputs, ... }: {
   imports = [
-    inputs.wallpaper-manager.nixosModules.default
+    inputs.wallpaper-manager.homeManagerModules.default
   ];
 
   programs.wallpaper-manager.enable = true;
@@ -52,12 +52,38 @@ This will:
 If you want to install the package without using the module:
 
 ```nix
-# In your configuration.nix or home.nix
+# In your configuration.nix
 { inputs, pkgs, ... }: {
   environment.systemPackages = [
-    inputs.wallpaper-manager.packages.${pkgs.system}.default
+    inputs.wallpaper-manager.packages.x86_64-linux.default
+    pkgs.swww  # Make sure swww is installed
   ];
 }
+```
+
+**Important:** When installing the package standalone, you must ensure that:
+1. The `swww` daemon is installed on your system
+2. The `swww` daemon is running before launching Wallpaper Manager
+3. You'll need to manually set up wallpaper persistence if desired
+
+To automatically start the swww daemon, you can create a systemd user service:
+
+```nix
+# In your configuration.nix or home.nix
+systemd.user.services.swww = {
+  Unit = {
+    Description = "Wayland Wallpaper Daemon";
+    PartOf = [ "graphical-session.target" ];
+    After = [ "graphical-session.target" ];
+  };
+  Install.WantedBy = [ "graphical-session.target" ];
+  Service = {
+    Type = "simple";
+    ExecStart = "${pkgs.swww}/bin/swww-daemon";
+    ExecStop = "${pkgs.swww}/bin/swww kill";
+    Restart = "on-failure";
+  };
+};
 ```
 
 ### Manual Installation (Without Nix)
