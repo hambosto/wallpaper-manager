@@ -18,7 +18,12 @@ pkgs.buildGoModule {
 
   postFixup = ''
     wrapProgram $out/bin/${common.meta.pname} \
-      --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.swww ]}
+      --prefix PATH : ${
+        pkgs.lib.makeBinPath [
+          pkgs.swww
+          pkgs.wallust
+        ]
+      }
   '';
 
   postInstall = ''
