@@ -96,7 +96,7 @@ in
     # Hyprland integration
     wayland.windowManager.hyprland = lib.mkIf config.programs.wallpaper-manager.hyprland.enable {
       extraConfig = ''
-        source = ${config.xdg.configHome}/config/hypr/hyprland-colors.conf
+        source = ${config.xdg.configHome}/hypr/hyprland-colors.conf
       '';
       settings = {
         general = {
