@@ -57,13 +57,9 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
-	swwwCmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
-	if err := swwwCmd.Run(); err != nil {
-		return err
-	}
+	cmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
 
-	wallustCmd := exec.Command("wallust", "run", absPath)
-	return wallustCmd.Run()
+	return cmd.Run()
 }
 
 func (s *WallpaperService) UpdateWallpaperDirectory(newDir string) {

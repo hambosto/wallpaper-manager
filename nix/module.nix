@@ -21,23 +21,15 @@ let
 in
 {
   options.programs.wallpaper-manager = {
-    enable = lib.mkEnableOption "Enable swww-selector";
-    # hyprland = {
-    #   enable = lib.mkEnableOption "Enable Hyprland color integration";
-    #   configFile = lib.mkOption {
-    #     type = lib.types.str;
-    #     default = "~/.config/hypr/hyprland.conf";
-    #     description = "Path to main Hyprland configuration file";
-    #   };
-    # };
+    enable = lib.mkEnableOption "Enable Wallpaper Manager";
   };
 
   config = lib.mkIf config.programs.wallpaper-manager.enable {
-    # Existing services configuration
+
     systemd.user.services = {
       swww = {
         Unit = {
-          Description = "Wayland Wallpaper Daemon";
+          Description = "SWWW Wallpaper Daemon";
           PartOf = [ "graphical-session.target" ];
           After = [ "graphical-session.target" ];
         };
@@ -52,7 +44,7 @@ in
 
       wallpaper-activator = {
         Unit = {
-          Description = "Activate Wallpaper using swww";
+          Description = "Activate Wallpaper using SWWW";
           Requires = [ "swww.service" ];
           After = [ "swww.service" ];
           PartOf = [ "swww.service" ];
@@ -64,27 +56,6 @@ in
         };
       };
     };
-
-    # # Wallust configuration
-    # home.file.".config/wallust/wallust.toml".text = ''
-    #   [templates]
-    #   hypr.template = 'hyprland-colors.conf'
-    #   hypr.target = '~/.config/hypr/hyprland-colors.conf'
-    # '';
-
-    # home.file.".config/wallust/templates/hyprland-colors.conf".text = ''
-    #   general {
-    #       col.active_border = rgb({{color1 | saturate(0.6) | strip}}) rgb({{color2 | saturate(0.6) | strip}}) rgb({{color3 | saturate(0.6) | strip}}) rgb({{color4 | saturate(0.6) | strip}}) rgb({{color5 | saturate(0.6) | strip}}) rgb({{color6 | saturate(0.6) | strip}})
-    #       col.inactive_border = rgba({{color0}})
-    #   }
-    # '';
-
-    # # Hyprland integration
-    # wayland.windowManager.hyprland = lib.mkIf config.programs.wallpaper-manager.hyprland.enable {
-    #   extraConfig = ''
-    #     source = ${config.xdg.configHome}/hypr/hyprland-colors.conf
-    #   '';
-    # };
 
     home.packages = [ self.packages.${pkgs.system}.default ];
   };
