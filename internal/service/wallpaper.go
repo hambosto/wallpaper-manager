@@ -47,7 +47,6 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 	}
 
 	cacheFile := filepath.Join(os.Getenv("HOME"), ".cache", ".active_wallpaper")
-
 	cacheDir := filepath.Dir(cacheFile)
 	if err := os.MkdirAll(cacheDir, 0o755); err != nil {
 		return err
@@ -57,8 +56,13 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
-	cmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
+	// clear wallpaper cache before setting new wallpaper
+	clearCache := exec.Command("swww", "clear-cache")
+	if err := clearCache.Run(); err != nil {
+		return err
+	}
 
+	cmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
 	return cmd.Run()
 }
 
