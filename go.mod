@@ -4,6 +4,7 @@ go 1.24.1
 
 require (
 	fyne.io/fyne/v2 v2.5.5
+	github.com/disintegration/imaging v1.6.2
 	golang.org/x/sync v0.12.0
 )
 
