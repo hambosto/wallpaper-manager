@@ -30,9 +30,9 @@ in
         default = "";
         description = "Extra arguments to pass to pywal";
       };
-      enableHyprlandIntegration = lib.mkEnableOption "Enable pywal integration with Hyprland";
-      enableFishIntegration = lib.mkEnableOption "Enable pywal integration with Fish shell";
-      enableKittyIntegration = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
+      hyprland.enable = lib.mkEnableOption "Enable pywal integration with Hyprland";
+      fish.enable = lib.mkEnableOption "Enable pywal integration with Fish shell";
+      kitty.enable = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
     };
   };
 
@@ -97,7 +97,7 @@ in
         (
           config.programs.kitty.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.enableKittyIntegration
+          && config.programs.wallpaper-manager.pywal.kitty.enable
         )
         {
           extraConfig = lib.mkForce ''
@@ -110,7 +110,7 @@ in
         (
           config.programs.fish.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.enableFishIntegration
+          && config.programs.wallpaper-manager.pywal.fish.enable
         )
         {
           # FIXME: This is messy. I have to clear my Home Manager Fish interactive shell init
@@ -130,7 +130,7 @@ in
         (
           config.wayland.windowManager.hyprland.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.enableHyprlandIntegration
+          && config.programs.wallpaper-manager.pywal.hyprland.enable
         )
         {
           settings = {
