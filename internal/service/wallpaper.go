@@ -67,7 +67,7 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
-	cmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
+	cmd := exec.Command("swww", "img", absPath, "--transition-type", "outer")
 	return cmd.Run()
 }
 
