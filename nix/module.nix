@@ -25,18 +25,9 @@ in
 
     wallust = {
       enable = lib.mkEnableOption "Enable wallust integration for color generation";
-    };
-
-    pywal = {
-      enable = lib.mkEnableOption "Enable pywal integration for theme generation";
-      extraArgs = lib.mkOption {
-        type = lib.types.str;
-        default = "";
-        description = "Extra arguments to pass to pywal";
-      };
-      hyprland.enable = lib.mkEnableOption "Enable pywal integration with Hyprland";
-      fish.enable = lib.mkEnableOption "Enable pywal integration with Fish shell";
-      kitty.enable = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
+      hyprland.enable = lib.mkEnableOption "Enable wallust integration with Hyprland";
+      fish.enable = lib.mkEnableOption "Enable wallust integration with Fish shell";
+      kitty.enable = lib.mkEnableOption "Enable wallust integration with Kitty terminal";
     };
   };
 
@@ -73,74 +64,89 @@ in
       };
     };
 
-    xdg.configFile."wallust/wallust.toml" = {
-      text = ''
-        backend = "fastresize"
-        color_space = "lch"
-        palette = "dark"
-        [templates]
-        hypr.template = "hyprland-colors.conf"
-        hypr.target = "${config.xdg.configHome}/hypr/themes/wallust.conf"
-      '';
-    };
+    xdg.configFile = {
+      "wallust/wallust.toml" = lib.mkIf config.programs.wallpaper-manager.wallust.enable {
+        text = ''
+          backend = "fastresize"
+          color_space = "lch"
+          palette = "dark"
+          [templates]
+          hypr.template = "hyprland-colors.conf"
+          hypr.target = "${config.xdg.configHome}/hypr/themes/wallust.conf"
+          kitty.template = "kitty-colors.conf"
+          kitty.target = "${config.xdg.configHome}/kitty/themes/kitty-colors.conf"
+        '';
+      };
+      "wallust/templates/hyprland-colors.conf" =
+        lib.mkIf config.programs.wallpaper-manager.wallust.enable
+          {
+            text = ''
+              $wallpaper = {{wallpaper}}
+              $background = rgb({{background | strip}})
+              $foreground = rgb({{foreground | strip}})
+              $color0 = rgb({{color0 | strip}})
+              $color1 = rgb({{color1 | strip}})
+              $color2 = rgb({{color2 | strip}})
+              $color3 = rgb({{color3 | strip}})
+              $color4 = rgb({{color4 | strip}})
+              $color5 = rgb({{color5 | strip}})
+              $color6 = rgb({{color6 | strip}})
+              $color7 = rgb({{color7 | strip}})
+              $color8 = rgb({{color8 | strip}})
+              $color9 = rgb({{color9 | strip}})
+              $color10 = rgb({{color10 | strip}})
+              $color11 = rgb({{color11 | strip}})
+              $color12 = rgb({{color12 | strip}})
+              $color13 = rgb({{color13 | strip}})
+              $color14 = rgb({{color14 | strip}})
+              $color15 = rgb({{color15 | strip}})
+            '';
+          };
+      "wallust/templates/kitty-colors.conf" = lib.mkIf config.programs.wallpaper-manager.wallust.enable {
+        text = ''
+          foreground         {{foreground}}
+          background         {{background}}
+          cursor             {{cursor}}
 
-    xdg.configFile."wallust/templates/hyprland-colors.conf" = {
-      text = ''
-        $wallpaper = {{wallpaper}}
-        $background = rgb({{background | strip}})
-        $foreground = rgb({{foreground | strip}})
-        $color0 = rgb({{color0 | strip}})
-        $color1 = rgb({{color1 | strip}})
-        $color2 = rgb({{color2 | strip}})
-        $color3 = rgb({{color3 | strip}})
-        $color4 = rgb({{color4 | strip}})
-        $color5 = rgb({{color5 | strip}})
-        $color6 = rgb({{color6 | strip}})
-        $color7 = rgb({{color7 | strip}})
-        $color8 = rgb({{color8 | strip}})
-        $color9 = rgb({{color9 | strip}})
-        $color10 = rgb({{color10 | strip}})
-        $color11 = rgb({{color11 | strip}})
-        $color12 = rgb({{color12 | strip}})
-        $color13 = rgb({{color13 | strip}})
-        $color14 = rgb({{color14 | strip}})
-        $color15 = rgb({{color15 | strip}})
-      '';
-    };
+          active_tab_foreground     {{background}}
+          active_tab_background     {{foreground}}
+          inactive_tab_foreground   {{foreground}}
+          inactive_tab_background   {{background}}
 
-    home.file = lib.mkIf config.programs.wallpaper-manager.pywal.enable {
-      ".config/wal/templates/colors-hyprland.conf".text = ''
-        $background = rgb({background.strip})
-        $foreground = rgb({foreground.strip})
-        $color0 = rgb({color0.strip})
-        $color1 = rgb({color1.strip})
-        $color2 = rgb({color2.strip})
-        $color3 = rgb({color3.strip})
-        $color4 = rgb({color4.strip})
-        $color5 = rgb({color5.strip})
-        $color6 = rgb({color6.strip})
-        $color7 = rgb({color7.strip})
-        $color8 = rgb({color8.strip})
-        $color9 = rgb({color9.strip})
-        $color10 = rgb({color10.strip})
-        $color11 = rgb({color11.strip})
-        $color12 = rgb({color12.strip})
-        $color13 = rgb({color13.strip})
-        $color14 = rgb({color14.strip})
-        $color15 = rgb({color15.strip})
-      '';
+          active_border_color   {{foreground}}
+          inactive_border_color {{background}}
+          bell_border_color     {{color1}}
+
+          color0      {{color0}}
+          color1      {{color1}}
+          color2      {{color2}}
+          color3      {{color3}}
+          color4      {{color4}}
+          color5      {{color5}}
+          color6      {{color6}}
+          color7      {{color7}}
+          color8      {{color8}}
+          color9      {{color9}}
+          color10     {{color10}}
+          color11     {{color11}}
+          color12     {{color12}}
+          color13     {{color13}}
+          color14     {{color14}}
+          color15     {{color15}}
+        '';
+      };
     };
 
     programs.kitty =
       lib.mkIf
         (
           config.programs.kitty.enable
-          && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.kitty.enable
+          && config.programs.wallpaper-manager.wallust.enable
+          && config.programs.wallpaper-manager.wallust.kitty.enable
         )
         {
           extraConfig = lib.mkForce ''
-            include ${config.xdg.cacheHome}/wal/colors-kitty.conf
+            include ${config.xdg.configHome}/kitty/themes/kitty-colors.conf
           '';
         };
 
@@ -148,18 +154,13 @@ in
       lib.mkIf
         (
           config.programs.fish.enable
-          && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.fish.enable
+          && config.programs.wallpaper-manager.wallust.enable
+          && config.programs.wallpaper-manager.wallust.fish.enable
         )
         {
-          # FIXME: This is messy. I have to clear my Home Manager Fish interactive shell init
-          # because the existing configuration will be overridden by this config.
-          # You should disable Stylix Fish if enabled using `stylix.targets.fish.enable = false;`.
-          # Sorry, everyone, for forcing you to add Fastfetch.
-          # For now, this only applies to the Fish shell, but it will be added to other shells soon.
           interactiveShellInit = ''
             set fish_greeting # Disable greeting
-            ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
+            ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wallust/sequences
             ${lib.getExe pkgs.fastfetch}
           '';
         };
@@ -168,12 +169,12 @@ in
       lib.mkIf
         (
           config.wayland.windowManager.hyprland.enable
-          && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.hyprland.enable
+          && config.programs.wallpaper-manager.wallust.enable
+          && config.programs.wallpaper-manager.wallust.hyprland.enable
         )
         {
           settings = {
-            source = [ "${config.xdg.cacheHome}/wal/colors-hyprland.conf" ];
+            source = [ "${config.xdg.configHome}/hypr/themes/wallust.conf" ];
             general = {
               "col.active_border" = lib.mkForce "$color11";
               "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
