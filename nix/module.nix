@@ -67,9 +67,10 @@ in
     xdg.configFile = {
       "wallust/wallust.toml" = lib.mkIf config.programs.wallpaper-manager.wallust.enable {
         text = ''
-          backend = "fastresize"
-          color_space = "lch"
-          palette = "dark"
+          backend = "kmeans"
+          color_space = "labmixed"
+          palette = "dark16"
+          threshold = 11
           [templates]
           hypr.template = "hyprland-colors.conf"
           hypr.target = "${config.xdg.configHome}/hypr/themes/wallust.conf"
