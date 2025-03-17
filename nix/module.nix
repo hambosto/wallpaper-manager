@@ -1,5 +1,5 @@
-{ self }:
 {
+  self,
   config,
   lib,
   pkgs,
@@ -7,10 +7,10 @@
 }:
 let
   wallpaper-activator = pkgs.writeShellScriptBin "wallpaper-activator" ''
-    WALLPAPER_PATH=$(${pkgs.coreutils}/bin/cat "$HOME/.cache/.active_wallpaper")
+    WALLPAPER_PATH=$(${pkgs.coreutils}/bin/cat "${config.xdg.cacheHome}/.active_wallpaper")
 
     if [[ -f "$WALLPAPER_PATH" ]]; then
-      ${pkgs.swww}/bin/swww img "$WALLPAPER_PATH" --transition-type random
+      ${lib.getExe pkgs.swww} img "$WALLPAPER_PATH" --transition-type random
       echo "Wallpaper set: $WALLPAPER_PATH"
       exit 0
     else
@@ -22,6 +22,18 @@ in
 {
   options.programs.wallpaper-manager = {
     enable = lib.mkEnableOption "Enable Wallpaper Manager";
+
+    pywal = {
+      enable = lib.mkEnableOption "Enable pywal integration for theme generation";
+      extraArgs = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "Extra arguments to pass to pywal";
+      };
+      hyprland.enable = lib.mkEnableOption "Enable pywal integration with Hyprland";
+      fish.enable = lib.mkEnableOption "Enable pywal integration with Fish shell";
+      kitty.enable = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
+    };
   };
 
   config = lib.mkIf config.programs.wallpaper-manager.enable {
@@ -57,42 +69,73 @@ in
       };
     };
 
-    xdg.configFile.".config/wal/templates/colors-hyprland.conf".text = ''
-      $background = rgb({background.strip})
-      $foreground = rgb({foreground.strip})
-      $color0 = rgb({color0.strip})
-      $color1 = rgb({color1.strip})
-      $color2 = rgb({color2.strip})
-      $color3 = rgb({color3.strip})
-      $color4 = rgb({color4.strip})
-      $color5 = rgb({color5.strip})
-      $color6 = rgb({color6.strip})
-      $color7 = rgb({color7.strip})
-      $color8 = rgb({color8.strip})
-      $color9 = rgb({color9.strip})
-      $color10 = rgb({color10.strip})
-      $color11 = rgb({color11.strip})
-      $color12 = rgb({color12.strip})
-      $color13 = rgb({color13.strip})
-      $color14 = rgb({color14.strip})
-      $color15 = rgb({color15.strip})
-    '';
-
-    programs.kitty = lib.mkIf config.programs.kitty.enable {
-      extraConfig = lib.mkForce ''
-        include ${config.xdg.cacheHome}/wal/colors-kitty.conf
+    xdg.configFile = lib.mkIf config.programs.wallpaper-manager.pywal.enable {
+      ".config/wal/templates/colors-hyprland.conf".text = ''
+        $background = rgb({background.strip})
+        $foreground = rgb({foreground.strip})
+        $color0 = rgb({color0.strip})
+        $color1 = rgb({color1.strip})
+        $color2 = rgb({color2.strip})
+        $color3 = rgb({color3.strip})
+        $color4 = rgb({color4.strip})
+        $color5 = rgb({color5.strip})
+        $color6 = rgb({color6.strip})
+        $color7 = rgb({color7.strip})
+        $color8 = rgb({color8.strip})
+        $color9 = rgb({color9.strip})
+        $color10 = rgb({color10.strip})
+        $color11 = rgb({color11.strip})
+        $color12 = rgb({color12.strip})
+        $color13 = rgb({color13.strip})
+        $color14 = rgb({color14.strip})
+        $color15 = rgb({color15.strip})
       '';
     };
 
-    wayland.windowManager.hyprland = lib.mkIf config.wayland.windowManager.hyprland.enable {
-      settings = {
-        source = [ "${config.xdg.cacheHome}/wal/colors-hyprland.conf" ];
-        general = {
-          "col.active_border" = lib.mkForce "$color11";
-          "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
+    programs.kitty =
+      lib.mkIf
+        (
+          config.programs.kitty.enable
+          && config.programs.wallpaper-manager.pywal.enable
+          && config.programs.wallpaper-manager.pywal.kitty.enable
+        )
+        {
+          extraConfig = lib.mkForce ''
+            include ${config.xdg.cacheHome}/wal/colors-kitty.conf
+          '';
         };
-      };
-    };
+
+    programs.fish =
+      lib.mkIf
+        (
+          config.programs.fish.enable
+          && config.programs.wallpaper-manager.pywal.enable
+          && config.programs.wallpaper-manager.pywal.fish.enable
+        )
+        {
+          interactiveShellInit = lib.mkForce (
+            lib.mkAfter ''
+              ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
+            ''
+          );
+        };
+
+    wayland.windowManager.hyprland =
+      lib.mkIf
+        (
+          config.wayland.windowManager.hyprland.enable
+          && config.programs.wallpaper-manager.pywal.enable
+          && config.programs.wallpaper-manager.pywal.hyprland.enable
+        )
+        {
+          settings = {
+            source = [ "${config.xdg.cacheHome}/wal/colors-hyprland.conf" ];
+            general = {
+              "col.active_border" = lib.mkForce "$color11";
+              "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
+            };
+          };
+        };
 
     home.packages = [ self.packages.${pkgs.system}.default ];
   };
