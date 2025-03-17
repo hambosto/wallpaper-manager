@@ -177,8 +177,20 @@ in
           settings = {
             source = [ "${config.xdg.configHome}/hypr/themes/wallust.conf" ];
             general = {
-              "col.active_border" = lib.mkForce "$color11";
-              "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
+              "col.active_border" = lib.mkForce "$color12";
+              "col.inactive_border" = lib.mkForce "$color10";
+            };
+            decoration = {
+              shadow = {
+                color = lib.mkForce "$color12";
+                color_inactive = lib.mkForce "$color10";
+              };
+            };
+            group = {
+              "col.border_active" = lib.mkForce "$color15";
+              groupbar = {
+                "col.active" = lib.mkForce "$color0";
+              };
             };
           };
         };
