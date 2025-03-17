@@ -113,12 +113,16 @@ in
           && config.programs.wallpaper-manager.pywal.enableFishIntegration
         )
         {
-          interactiveShellInit = lib.mkForce (
-            ''
-              ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
-            ''
-            + config.programs.fish.interactiveShellInit
-          );
+          interactiveShellInit =
+            let
+              existingInit = config.programs.fish.interactiveShellInit or "";
+            in
+            lib.mkForce (
+              ''
+                ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
+              ''
+              + existingInit
+            );
         };
 
     wayland.windowManager.hyprland =
