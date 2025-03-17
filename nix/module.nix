@@ -10,7 +10,7 @@ let
     WALLPAPER_PATH=$(${pkgs.coreutils}/bin/cat "${config.xdg.cacheHome}/.active_wallpaper")
 
     if [[ -f "$WALLPAPER_PATH" ]]; then
-      ${lib.getExe pkgs.swww} img "$WALLPAPER_PATH" --transition-type random
+      ${lib.getExe pkgs.swww} img "$WALLPAPER_PATH" --transition-type outer
       echo "Wallpaper set: $WALLPAPER_PATH"
       exit 0
     else
