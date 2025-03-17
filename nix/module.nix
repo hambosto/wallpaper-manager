@@ -69,7 +69,7 @@ in
       };
     };
 
-    xdg.configFile = lib.mkIf config.programs.wallpaper-manager.pywal.enable {
+    home.file = lib.mkIf config.programs.wallpaper-manager.pywal.enable {
       ".config/wal/templates/colors-hyprland.conf".text = ''
         $background = rgb({background.strip})
         $foreground = rgb({foreground.strip})
@@ -118,7 +118,7 @@ in
           # You should disable Stylix Fish if enabled using `stylix.targets.fish.enable = false;`.
           # Sorry, everyone, for forcing you to add Fastfetch.
           # For now, this only applies to the Fish shell, but it will be added to other shells soon.
-          interactiveShellInit = lib.mkForce ''
+          interactiveShellInit = ''
             set fish_greeting # Disable greeting
             ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
             ${lib.getExe pkgs.fastfetch}
