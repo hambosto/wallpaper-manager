@@ -113,6 +113,8 @@ in
           && config.programs.wallpaper-manager.pywal.enableFishIntegration
         )
         {
+          # FIXME: THIS IS SO UGLY, I have to emptying my home manager fish interactive shell init
+          # because existing configuration will be overriden by this config
           interactiveShellInit = lib.mkForce ''
             set fish_greeting # Disable greeting
             ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
