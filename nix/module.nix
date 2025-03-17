@@ -208,21 +208,6 @@ in
           '';
         };
       };
-
-      # Add systemd service for Wallust
-      systemd.user.services.wallust = {
-        Unit = {
-          Description = "Wallust color scheme generator";
-          After = [ "wallpaper-activator.service" ];
-          PartOf = [ "graphical-session.target" ];
-        };
-        Install.WantedBy = [ "graphical-session.target" ];
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.wallust}/bin/wallust";
-          Restart = "on-failure";
-        };
-      };
     })
 
     # Kitty Integration
