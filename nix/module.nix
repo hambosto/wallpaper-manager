@@ -79,6 +79,7 @@ in
       integrations = {
         hyprland = mkEnableOption "Wallust integration with Hyprland";
         kitty = mkEnableOption "Wallust integration with Kitty terminal";
+        fish = mkEnableOption "Wallust integration with Fish shell";
         rofi = mkEnableOption "Wallust integration with Rofi";
       };
     };
@@ -246,7 +247,7 @@ in
     })
 
     # Fish Integration
-    (mkIf (config.programs.fish.enable && cfg.wallust.enable && cfg.wallust.integrations.kitty) {
+    (mkIf (config.programs.fish.enable && cfg.wallust.enable && cfg.wallust.integrations.fish) {
       programs.fish.interactiveShellInit = mkBefore ''
         # Apply terminal colors from Wallust
         if test -f ${config.xdg.cacheHome}/wallust/sequences
