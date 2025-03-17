@@ -30,9 +30,9 @@ in
         default = "";
         description = "Extra arguments to pass to pywal";
       };
-      hyprland.enable = lib.mkEnableOption "Enable pywal integration with Hyprland";
-      fish.enable = lib.mkEnableOption "Enable pywal integration with Fish shell";
-      kitty.enable = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
+      enableHyprlandIntegration = lib.mkEnableOption "Enable pywal integration with Hyprland";
+      enableFishIntegration = lib.mkEnableOption "Enable pywal integration with Fish shell";
+      enableKittyIntegration = lib.mkEnableOption "Enable pywal integration with Kitty terminal";
     };
   };
 
@@ -97,7 +97,7 @@ in
         (
           config.programs.kitty.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.kitty.enable
+          && config.programs.wallpaper-manager.pywal.enableKittyIntegration
         )
         {
           extraConfig = lib.mkForce ''
@@ -110,13 +110,14 @@ in
         (
           config.programs.fish.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.fish.enable
+          && config.programs.wallpaper-manager.pywal.enableFishIntegration
         )
         {
           interactiveShellInit = lib.mkForce (
-            lib.mkAfter ''
+            ''
               ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
             ''
+            + config.programs.fish.interactiveShellInit
           );
         };
 
@@ -125,7 +126,7 @@ in
         (
           config.wayland.windowManager.hyprland.enable
           && config.programs.wallpaper-manager.pywal.enable
-          && config.programs.wallpaper-manager.pywal.hyprland.enable
+          && config.programs.wallpaper-manager.pywal.enableHyprlandIntegration
         )
         {
           settings = {
