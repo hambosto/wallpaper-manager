@@ -21,7 +21,7 @@ pkgs.buildGoModule {
       --prefix PATH : ${
         pkgs.lib.makeBinPath [
           pkgs.swww
-          pkgs.wallust
+          # pkgs.wallust
         ]
       }
   '';
