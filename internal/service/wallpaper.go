@@ -56,7 +56,6 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
-	// clear wallpaper cache before setting new wallpaper
 	clearCache := exec.Command("swww", "clear-cache")
 	if err := clearCache.Run(); err != nil {
 		return err
@@ -67,8 +66,13 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
-	cmd := exec.Command("swww", "img", absPath, "--transition-type", "outer")
-	return cmd.Run()
+	swwwCmd := exec.Command("swww", "img", absPath, "--transition-type", "outer")
+	if err := swwwCmd.Run(); err != nil {
+		return err
+	}
+
+	reloadCmd := exec.Command("hyprctl", "reload")
+	return reloadCmd.Run()
 }
 
 func (s *WallpaperService) UpdateWallpaperDirectory(newDir string) {
