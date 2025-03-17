@@ -62,6 +62,11 @@ func (s *WallpaperService) SetWallpaper(path string) error {
 		return err
 	}
 
+	pywalCmd := exec.Command("wal", "-i", absPath)
+	if err := pywalCmd.Run(); err != nil {
+		return err
+	}
+
 	cmd := exec.Command("swww", "img", absPath, "--transition-type", "random")
 	return cmd.Run()
 }
