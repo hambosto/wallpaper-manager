@@ -73,7 +73,7 @@ in
           threshold = 11
           [templates]
           hypr.template = "hyprland-colors.conf"
-          hypr.target = "${config.xdg.configHome}/hypr/themes/wallust.conf"
+          hypr.target = "${config.xdg.configHome}/hypr/themes/hyprland-colors.conf"
           kitty.template = "kitty-colors.conf"
           kitty.target = "${config.xdg.configHome}/kitty/themes/kitty-colors.conf"
         '';
@@ -175,7 +175,7 @@ in
         )
         {
           settings = {
-            source = [ "${config.xdg.configHome}/hypr/themes/wallust.conf" ];
+            source = [ "${config.xdg.configHome}/hypr/themes/hyprland-colors.conf" ];
             general = {
               "col.active_border" = lib.mkForce "$color12";
               "col.inactive_border" = lib.mkForce "$color10";
