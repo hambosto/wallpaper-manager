@@ -23,6 +23,10 @@ in
   options.programs.wallpaper-manager = {
     enable = lib.mkEnableOption "Enable Wallpaper Manager";
 
+    wallust = {
+      enable = lib.mkEnableOption "Enable wallust integration for color generation";
+    };
+
     pywal = {
       enable = lib.mkEnableOption "Enable pywal integration for theme generation";
       extraArgs = lib.mkOption {
@@ -65,6 +69,19 @@ in
         Service = {
           Type = "oneshot";
           ExecStart = "${wallpaper-activator}/bin/wallpaper-activator";
+        };
+      };
+    };
+
+    xdg.configFile."wallust/wallust.toml".text = builtins.toTOML {
+      backend = "fastresize";
+      color_space = "lch";
+      palette = "dark";
+
+      templates = {
+        hypr = {
+          template = "hyprland-colors.conf";
+          target = "${config.xdg.configFile}/hypr/themes/wallust.conf";
         };
       };
     };
