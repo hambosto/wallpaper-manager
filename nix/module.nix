@@ -215,8 +215,6 @@ in
           "wallust/templates/rofi-colors.rasi" = mkIf cfg.wallust.integrations.rofi {
             text = ''
               * {{
-                  background: rgba(0,0,1,0.5);
-                  foreground: #FFFFFF;
                   color0:     {color0};
                   color1:     {color1};
                   color2:     {color2};
