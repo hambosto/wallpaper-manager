@@ -87,8 +87,10 @@ in
     wayland.windowManager.hyprland = lib.mkIf config.wayland.windowManager.hyprland.enable {
       settings = {
         source = [ "${config.xdg.cacheHome}/wal/colors-hyprland.conf" ];
-        "col.active_border" = lib.mkForce "$color11";
-        "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
+        general = {
+          "col.active_border" = lib.mkForce "$color11";
+          "col.inactive_border" = lib.mkForce "rgba(ffffffff)";
+        };
       };
     };
 
