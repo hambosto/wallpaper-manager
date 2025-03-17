@@ -73,14 +73,16 @@ in
       };
     };
 
-    xdg.configFile."wallust/wallust.toml".text = ''
-      backend = "fastresize"
-      color_space = "lch"
-      palette = "dark"
-      [templates]
-      hypr.template = "hyprland-colors.conf"
-      hypr.target = "${config.xdg.configFile}/hypr/themes/wallust.conf"
-    '';
+    xdg.configFile."wallust/wallust.toml" = {
+      text = ''
+        backend = "fastresize"
+        color_space = "lch"
+        palette = "dark"
+        [templates]
+        hypr.template = "hyprland-colors.conf"
+        hypr.target = "${config.xdg.configHome}/hypr/themes/wallust.conf"
+      '';
+    };
 
     home.file = lib.mkIf config.programs.wallpaper-manager.pywal.enable {
       ".config/wal/templates/colors-hyprland.conf".text = ''
