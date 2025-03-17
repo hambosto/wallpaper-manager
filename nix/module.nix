@@ -159,10 +159,8 @@ in
           && config.programs.wallpaper-manager.wallust.fish.enable
         )
         {
-          interactiveShellInit = ''
-            set fish_greeting # Disable greeting
+          interactiveShellInit = lib.mkBefore ''
             ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wallust/sequences
-            ${lib.getExe pkgs.fastfetch}
           '';
         };
 
