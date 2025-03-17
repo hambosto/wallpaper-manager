@@ -113,8 +113,11 @@ in
           && config.programs.wallpaper-manager.pywal.enableFishIntegration
         )
         {
-          # FIXME: THIS IS SO UGLY, I have to emptying my home manager fish interactive shell init
-          # because existing configuration will be overriden by this config
+          # FIXME: This is messy. I have to clear my Home Manager Fish interactive shell init
+          # because the existing configuration will be overridden by this config.
+          # You should disable Stylix Fish if enabled using `stylix.targets.fish.enable = false;`.
+          # Sorry, everyone, for forcing you to add Fastfetch.
+          # For now, this only applies to the Fish shell, but it will be added to other shells soon.
           interactiveShellInit = lib.mkForce ''
             set fish_greeting # Disable greeting
             ${pkgs.coreutils}/bin/cat ${config.xdg.cacheHome}/wal/sequences
