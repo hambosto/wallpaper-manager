@@ -1,4 +1,4 @@
-{ self, swww }:
+{ self }:
 {
   config,
   lib,
@@ -11,14 +11,11 @@ with lib;
 let
   cfg = config.programs.wallpaper-manager;
 
-  # Use swww from the flake input directly
-  swwwPkg = swww.packages.${pkgs.system}.swww;
-
   wallpaper-activator = pkgs.writeShellScriptBin "wallpaper-activator" ''
     WALLPAPER_PATH=$(${pkgs.coreutils}/bin/cat "${config.xdg.cacheHome}/.active_wallpaper")
 
     if [[ -f "$WALLPAPER_PATH" ]]; then
-      ${lib.getExe swwwPkg} img "$WALLPAPER_PATH" --transition-type outer
+      ${lib.getExe pkgs.swww} img "$WALLPAPER_PATH" --transition-type outer
       echo "Wallpaper set: $WALLPAPER_PATH"
       exit 0
     else
@@ -104,8 +101,8 @@ in
           Install.WantedBy = [ "graphical-session.target" ];
           Service = {
             Type = "simple";
-            ExecStart = "${swwwPkg}/bin/swww-daemon";
-            ExecStop = "${swwwPkg}/bin/swww kill";
+            ExecStart = "${pkgs.swww}/bin/swww-daemon";
+            ExecStop = "${pkgs.swww}/bin/swww kill";
             Restart = "on-failure";
             RestartSec = 5;
           };
@@ -128,10 +125,7 @@ in
         };
       };
 
-      home.packages = with pkgs; [
-        self.packages.${system}.default
-        swwwPkg
-      ];
+      home.packages = with pkgs; [ self.packages.${system}.default ];
     }
 
     # Wallust Integration
