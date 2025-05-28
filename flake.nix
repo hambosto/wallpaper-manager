@@ -4,10 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    swww = {
-      url = "github:LGFae/swww";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -15,7 +11,6 @@
       self,
       nixpkgs,
       flake-utils,
-      swww,
       ...
     }:
     let
