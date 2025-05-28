@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    swww = {
+      url = "github:LGFae/swww";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -11,6 +15,7 @@
       self,
       nixpkgs,
       flake-utils,
+      swww,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -31,6 +36,7 @@
           nixpkgs.overlays = [
             (final: prev: {
               wallpaper-manager = self.packages.${pkgs.system}.default;
+              swww = swww.packages.${pkgs.system}.swww;
             })
           ];
         };
