@@ -31,7 +31,6 @@
           nixpkgs.overlays = [
             (final: prev: {
               wallpaper-manager = self.packages.${pkgs.system}.default;
-              swww = swww.packages.${pkgs.system}.swww;
             })
           ];
         };
